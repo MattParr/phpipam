@@ -785,9 +785,12 @@ class User extends Common_functions {
      * @return void
      */
     public function authenticate ($username, $password, $saml = false) {
-        if(($saml !== false ) && (defined('MAP_SAML_USER'))) {
-            $username = SAML_USERNAME;
+        if(($saml !== false ) && (ENABLE_SAML_USERNAME_OVERRIDE === true)) {
+            $username = SAML_USERNAME_OVERRIDE;
         }
+	# if the username doesn't exist and ENABLE_SAML_DEFAULT_USERNAME then switch to default user
+	try { $user = $this->Database->findObject("users", "username", $username); }
+            catch (Exception $e) { $username = SAML_DEFAULT_USERNAME; }
         # first we need to check if username exists
         $this->fetch_user_details ($username);
         # set method type if set, otherwise presume local auth
@@ -809,7 +812,12 @@ class User extends Common_functions {
             }
             # is auth_SAML and $saml == false throw error
             if ($authmethodtype=="auth_SAML2" && $saml===false) {
-                $this->Result->show("danger", "Please use <a href='".create_link('saml2')."'>login</a>!", true);
+		$this->Log->write ("User login", _('Error: Invalid authentication method'), 2 );
+		# redirect to the SAML login page
+		ob_clean();
+                header('Location: '.create_link('saml2'));
+                ob_end_flush();
+                die();
             }
             else {
                 # authenticate
