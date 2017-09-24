@@ -87,12 +87,18 @@ define('MCUNIQUE', "section");
 
 /**
  * SAML mappings
+ * ENABLE_SAML_USERNAME_OVERRIDE to have all SAML users log in as a single user
+ * SAML_USERNAME_OVERRIDE is the name of the user everyone logs in with
+ * ENABLE_SAML_DEFAULT_USERNAME to have unmapped SAML users log in as a default user
+ * SAML_DEFAULT_USERNAME is the name of the user unmapped SAML users log in with
  ******************************/
-if(!defined('MAP_SAML_USER'))
-define('MAP_SAML_USER', true);    // Enable SAML username mapping
+if(!defined('ENABLE_SAML_USERNAME_OVERRIDE'))
+define('ENABLE_SAML_USERNAME_OVERRIDE', false);    // Disable SAML username override by default
+define('SAML_USERNAME_OVERRIDE' , 'admin'); 
 
-if(!defined('SAML_USERNAME'))
-define('SAML_USERNAME', 'admin'); // Map SAML to explicit user
+if(!defined('ENABLE_SAML_DEFAULT_USERNAME'))
+define('ENABLE_SAML_DEFAULT_USERNAME', false);  // Disable SAML default username by default
+define('SAML_DEFAULT_USERNAME', 'admin');
 
 
 /**
